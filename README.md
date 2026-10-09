@@ -1,6 +1,5 @@
 # Báo cáo kiểm thử API Restful Booker bằng Postman
 
-> **BẢN MẪU: số liệu trong báo cáo này là minh họa, không phải kết quả chạy thực tế.** Trước khi nộp, hãy chạy collection và thay toàn bộ số liệu bằng kết quả thật.
 
 ## 1. Giới thiệu
 
