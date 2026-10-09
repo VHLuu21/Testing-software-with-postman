@@ -1,5 +1,7 @@
 # Báo cáo kiểm thử API Restful Booker bằng Postman
 
+> **BẢN MẪU: số liệu trong báo cáo này là minh họa, không phải kết quả chạy thực tế.** Trước khi nộp, hãy chạy collection và thay toàn bộ số liệu bằng kết quả thật.
+
 ## 1. Giới thiệu
 
 Restful Booker là API công khai mô phỏng hệ thống đặt phòng khách sạn. API cung cấp các thao tác CRUD trên tài nguyên `booking` và cơ chế xác thực bằng token. Báo cáo này trình bày quá trình kiểm thử các endpoint chính bằng Postman, bao gồm kịch bản hợp lệ, không hợp lệ, kiểm tra xác thực và thời gian phản hồi.
@@ -69,26 +71,26 @@ Các request tạo booking sẽ lưu `bookingId` và `token` vào biến của c
 
 ## 6. Kết quả thực hiện
 
-> Phần này điền sau khi chạy thực tế. Thay `_(chưa chạy)_` bằng kết quả thật.
+> Số liệu minh họa cho bản mẫu. Thay bằng kết quả chạy thực tế.
 
 | ID | Kết quả thực tế | Status code | Thời gian (ms) | Đạt / Không đạt |
 |---|---|---|---|---|
-| TC01 | _(chưa chạy)_ | | | |
-| TC02 | _(chưa chạy)_ | | | |
-| TC03 | _(chưa chạy)_ | | | |
-| TC04 | _(chưa chạy)_ | | | |
-| TC05 | _(chưa chạy)_ | | | |
-| TC06 | _(chưa chạy)_ | | | |
-| TC07 | _(chưa chạy)_ | | | |
-| TC08 | _(chưa chạy)_ | | | |
-| TC09 | _(chưa chạy)_ | | | |
-| TC10 | _(chưa chạy)_ | | | |
-| TC11 | _(chưa chạy)_ | | | |
-| TC12 | _(chưa chạy)_ | | | |
-| TC13 | _(chưa chạy)_ | | | |
-| TC14 | _(chưa chạy)_ | | | |
+| TC01 | Đăng nhập thành công, nhận token | 200 | 284 | Đạt |
+| TC02 | Trả về Bad credentials | 200 | 231 | Đạt |
+| TC03 | Danh sách booking trả về đúng | 200 | 196 | Đạt |
+| TC04 | Đủ trường dữ liệu | 200 | 188 | Đạt |
+| TC05 | Không tìm thấy booking | 404 | 173 | Đạt |
+| TC06 | Tạo booking thành công | 200 | 342 | Đạt |
+| TC07 | Trả về 500 thay vì 400 | 500 | 205 | Không đạt |
+| TC08 | Cập nhật thành công | 200 | 221 | Đạt |
+| TC09 | Từ chối truy cập | 403 | 168 | Đạt |
+| TC10 | Chỉ firstname thay đổi | 200 | 229 | Đạt |
+| TC11 | Xóa thành công | 201 | 210 | Đạt |
+| TC12 | Từ chối truy cập | 403 | 161 | Đạt |
+| TC13 | Không tìm thấy sau khi xóa | 404 | 170 | Đạt |
+| TC14 | Phản hồi nhanh | 200 | 196 | Đạt |
 
-**Tổng kết:** _(số test đạt / tổng số test)_
+**Tổng kết:** 13 / 14 test đạt (92,9%). Test không đạt: TC07.
 
 ### 6.1. Minh họa kết quả
 
@@ -124,7 +126,7 @@ Chèn ảnh chụp màn hình vào thư mục `images/` và đặt tên theo m�
 
 | Mã lỗi | Test case | Mô tả | Mức độ | Trạng thái |
 |---|---|---|---|---|
-| BUG-01 | TC07 | Khi thiếu trường bắt buộc, API có thể trả về mã lỗi máy chủ (500) thay vì lỗi dữ liệu đầu vào (400). _(kiểm chứng khi chạy)_ | Trung bình | Mở |
+| BUG-01 | TC07 | Khi thiếu trường bắt buộc (`firstname`), API trả về 500 thay vì 400. | Trung bình | Mở |
 
 ## 8. Khuyến nghị
 
@@ -135,7 +137,7 @@ Chèn ảnh chụp màn hình vào thư mục `images/` và đặt tên theo m�
 
 ## 9. Kết luận
 
-_(Viết sau khi có kết quả: nêu số test đạt, các lỗi chính, và đánh giá tổng quan chất lượng API.)_
+Trong 14 test case, 13 test đạt. API xử lý đúng các luồng chính: xác thực, CRUD booking và kiểm soát truy cập bằng token. Lỗi chính là BUG-01: API trả về 500 khi dữ liệu đầu vào thiếu trường bắt buộc, cần sửa thành 400 kèm thông báo rõ ràng. Thời gian phản hồi các request đều dưới 400 ms, đáp ứng ngưỡng 2000 ms.
 
 ## 10. Cấu trúc thư mục
 
