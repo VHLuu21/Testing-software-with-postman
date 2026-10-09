@@ -1,0 +1,207 @@
+{
+  "info": {
+    "name": "Restful Booker - Kiểm thử API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Bộ test kiểm thử API Restful Booker (TC01 - TC14)."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://restful-booker.platformbuilders.io" },
+    { "key": "token", "value": "" },
+    { "key": "bookingId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "TC01 - Đăng nhập hợp lệ",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"username\": \"admin\", \"password\": \"password123\"}" },
+        "url": "{{baseUrl}}/auth"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 200', () => pm.response.to.have.status(200));",
+          "pm.test('Có trường token', () => pm.expect(pm.response.json()).to.have.property('token'));",
+          "pm.collectionVariables.set('token', pm.response.json().token);"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC02 - Đăng nhập sai mật khẩu",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"username\": \"admin\", \"password\": \"sai\"}" },
+        "url": "{{baseUrl}}/auth"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Trả về lỗi Bad credentials', () => pm.expect(pm.response.json().reason).to.eql('Bad credentials'));"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC03 - Lấy danh sách booking",
+      "request": { "method": "GET", "url": "{{baseUrl}}/booking" },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 200', () => pm.response.to.have.status(200));",
+          "pm.test('Là mảng và có phần tử', () => { const d = pm.response.json(); pm.expect(d).to.be.an('array'); pm.expect(d.length).to.be.above(0); });"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC06 - Tạo booking hợp lệ",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"firstname\": \"Jim\", \"lastname\": \"Brown\", \"totalprice\": 111, \"depositpaid\": true, \"bookingdates\": {\"checkin\": \"2026-01-01\", \"checkout\": \"2026-01-05\"}, \"additionalneeds\": \"Breakfast\"}" },
+        "url": "{{baseUrl}}/booking"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 200', () => pm.response.to.have.status(200));",
+          "pm.test('Có bookingid và booking', () => { const d = pm.response.json(); pm.expect(d).to.have.property('bookingid'); pm.expect(d).to.have.property('booking'); });",
+          "pm.collectionVariables.set('bookingId', pm.response.json().bookingid);"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC04 - Lấy booking theo ID hợp lệ",
+      "request": { "method": "GET", "url": "{{baseUrl}}/booking/{{bookingId}}" },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 200', () => pm.response.to.have.status(200));",
+          "pm.test('Có đủ trường dữ liệu', () => { const d = pm.response.json(); ['firstname','lastname','totalprice','depositpaid','bookingdates'].forEach(k => pm.expect(d).to.have.property(k)); });"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC05 - Lấy booking ID không tồn tại",
+      "request": { "method": "GET", "url": "{{baseUrl}}/booking/999999" },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 404', () => pm.response.to.have.status(404));"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC07 - Tạo booking thiếu trường bắt buộc",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"lastname\": \"Brown\", \"totalprice\": 111, \"depositpaid\": true, \"bookingdates\": {\"checkin\": \"2026-01-01\", \"checkout\": \"2026-01-05\"}}" },
+        "url": "{{baseUrl}}/booking"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Mong đợi 400 khi thiếu firstname', () => pm.response.to.have.status(400));"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC08 - Cập nhật toàn bộ có token",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Cookie", "value": "token={{token}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\"firstname\": \"James\", \"lastname\": \"Brown\", \"totalprice\": 150, \"depositpaid\": false, \"bookingdates\": {\"checkin\": \"2026-02-01\", \"checkout\": \"2026-02-05\"}, \"additionalneeds\": \"Lunch\"}" },
+        "url": "{{baseUrl}}/booking/{{bookingId}}"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 200', () => pm.response.to.have.status(200));",
+          "pm.test('Dữ liệu được cập nhật', () => pm.expect(pm.response.json().firstname).to.eql('James'));"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC09 - Cập nhật toàn bộ không có token",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"firstname\": \"Hacker\", \"lastname\": \"Test\", \"totalprice\": 1, \"depositpaid\": false, \"bookingdates\": {\"checkin\": \"2026-02-01\", \"checkout\": \"2026-02-05\"}}" },
+        "url": "{{baseUrl}}/booking/{{bookingId}}"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 403 khi không có token', () => pm.response.to.have.status(403));"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC10 - Cập nhật một phần có token",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Cookie", "value": "token={{token}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\"firstname\": \"Patched\"}" },
+        "url": "{{baseUrl}}/booking/{{bookingId}}"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 200', () => pm.response.to.have.status(200));",
+          "pm.test('Chỉ firstname thay đổi', () => pm.expect(pm.response.json().firstname).to.eql('Patched'));"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC14 - Thời gian phản hồi",
+      "request": { "method": "GET", "url": "{{baseUrl}}/booking" },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Phản hồi dưới 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC12 - Xóa booking không có token",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/booking/{{bookingId}}" },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 403 khi không có token', () => pm.response.to.have.status(403));"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC11 - Xóa booking có token",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Cookie", "value": "token={{token}}" }],
+        "url": "{{baseUrl}}/booking/{{bookingId}}"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 201', () => pm.response.to.have.status(201));"
+        ], "type": "text/javascript" }
+      }]
+    },
+    {
+      "name": "TC13 - Kiểm tra booking đã xóa",
+      "request": { "method": "GET", "url": "{{baseUrl}}/booking/{{bookingId}}" },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Status 404 sau khi xóa', () => pm.response.to.have.status(404));"
+        ], "type": "text/javascript" }
+      }]
+    }
+  ]
+}
