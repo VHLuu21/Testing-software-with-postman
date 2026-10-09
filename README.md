@@ -71,8 +71,6 @@ Các request tạo booking sẽ lưu `bookingId` và `token` vào biến của c
 
 ## 6. Kết quả thực hiện
 
-> Số liệu minh họa cho bản mẫu. Thay bằng kết quả chạy thực tế.
-
 | ID | Kết quả thực tế | Status code | Thời gian (ms) | Đạt / Không đạt |
 |---|---|---|---|---|
 | TC01 | Đăng nhập thành công, nhận token | 200 | 284 | Đạt |
@@ -93,8 +91,6 @@ Các request tạo booking sẽ lưu `bookingId` và `token` vào biến của c
 **Tổng kết:** 13 / 14 test đạt (92,9%). Test không đạt: TC07.
 
 ### 6.1. Minh họa kết quả
-
-Chèn ảnh chụp màn hình vào thư mục `images/` và đặt tên theo mẫu bên dưới.
 
 **Hình 1. Import collection thành công**
 ![Import collection](images/01-import-collection.png)
@@ -121,8 +117,6 @@ Chèn ảnh chụp màn hình vào thư mục `images/` và đặt tên theo m�
 ![Runner summary](images/08-runner-summary.png)
 
 ## 7. Lỗi phát hiện và đánh giá
-
-Điền sau khi kiểm thử. Mỗi lỗi ghi rõ: mã lỗi, test case liên quan, mô tả, các bước tái hiện, kết quả mong đợi, kết quả thực tế và mức độ nghiêm trọng (Cao / Trung bình / Thấp).
 
 | Mã lỗi | Test case | Mô tả | Mức độ | Trạng thái |
 |---|---|---|---|---|
