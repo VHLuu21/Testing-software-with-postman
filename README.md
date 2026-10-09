@@ -29,8 +29,8 @@ Restful Booker là API công khai mô phỏng hệ thống đặt phòng khách 
 |---|---|
 | Base URL | `https://restful-booker.platformbuilders.io` |
 | Công cụ | Postman (phiên bản: ghi lại khi chạy) / Newman (tùy chọn) |
-| Hệ điều hành | _(điền)_ |
-| Ngày thực hiện | _(điền)_ |
+| Hệ điều hành | Windows |
+| Ngày thực hiện | 9/10/2026 |
 | Tài khoản test | `admin` / `password123` |
 
 Cách xác thực: gửi `POST /auth` để lấy token, sau đó đưa token vào header `Cookie: token=<token>` cho các request PUT, PATCH, DELETE.
